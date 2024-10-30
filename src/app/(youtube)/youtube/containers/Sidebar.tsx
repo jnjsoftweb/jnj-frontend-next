@@ -1,16 +1,14 @@
 import {
-  User,
   Home,
   PlaySquare,
   Users,
   Library,
-  History,
-  Video,
   Clock,
   ThumbsUp,
   ChevronDown,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import mySubscriptions from '../db/mySubscriptions.json';
 
 interface SidebarProps {
   isExpandedSidebar: boolean;
@@ -22,19 +20,11 @@ export function Sidebar({ isExpandedSidebar }: SidebarProps) {
     { name: 'Shorts', icon: PlaySquare },
     { name: 'Subscriptions', icon: Users },
     { name: 'Library', icon: Library },
-    { name: 'History', icon: History },
-    { name: 'Your videos', icon: Video },
     { name: 'Watch later', icon: Clock },
     { name: 'Liked videos', icon: ThumbsUp },
   ];
 
-  const subscriptions = [
-    'Channel 1',
-    'Channel 2',
-    'Channel 3',
-    'Channel 4',
-    'Channel 5',
-  ];
+  const subscriptions = mySubscriptions;
 
   return (
     <aside
@@ -65,13 +55,17 @@ export function Sidebar({ isExpandedSidebar }: SidebarProps) {
         </h3>
         {subscriptions.map((channel) => (
           <Button
-            key={channel}
+            key={channel.channelId}
             variant="ghost"
-            className="w-full justify-start"
+            className="w-full justify-start gap-2"
           >
-            <User className="h-5 w-5 mr-0 xl:mr-2" />
+            <img
+              src={channel.thumbnail}
+              alt={channel.title}
+              className="h-6 w-6 rounded-full"
+            />
             <span className={isExpandedSidebar ? 'inline' : 'hidden'}>
-              {channel}
+              {channel.title}
             </span>
           </Button>
         ))}

@@ -8,7 +8,6 @@ import {
   Home as HomeIcon,
   PlaySquare,
   Library as LibraryIcon,
-  History,
   Clock,
   ThumbsUp,
 } from 'lucide-react';
@@ -17,6 +16,7 @@ import { Sheet, SheetContent } from '@/components/ui/sheet';
 import { Header } from '../containers/Header';
 import { Sidebar } from '../containers/Sidebar';
 import { MainContent } from './containers/MainContent';
+import mySubscriptions from '../db/mySubscriptions.json';
 
 export default function Page() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -27,19 +27,11 @@ export default function Page() {
     { name: 'Shorts', icon: PlaySquare },
     { name: 'Subscriptions', icon: User },
     { name: 'Library', icon: LibraryIcon },
-    { name: 'History', icon: History },
-    { name: 'Your videos', icon: Video },
     { name: 'Watch later', icon: Clock },
     { name: 'Liked videos', icon: ThumbsUp },
   ];
 
-  const subscriptions = [
-    'Channel 1',
-    'Channel 2',
-    'Channel 3',
-    'Channel 4',
-    'Channel 5',
-  ];
+  const subscriptions = mySubscriptions;
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -75,12 +67,16 @@ export default function Page() {
             </h3>
             {subscriptions.map((channel) => (
               <Button
-                key={channel}
+                key={channel.channelId}
                 variant="ghost"
-                className="w-full justify-start"
+                className="w-full justify-start gap-2"
               >
-                <User className="h-5 w-5 mr-2" />
-                {channel}
+                <img
+                  src={channel.thumbnail}
+                  alt={channel.title}
+                  className="h-6 w-6 rounded-full"
+                />
+                {channel.title}
               </Button>
             ))}
             <Button variant="ghost" className="w-full justify-start">
