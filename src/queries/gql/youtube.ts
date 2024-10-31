@@ -6,6 +6,10 @@ const CHANNEL_DETAIL_BY_ID = `
       customUrl
       publishedAt
       thumbnail
+      uploadsPlaylistId
+      viewCount
+      subscriberCount
+      videoCount
     }
   }
 `;

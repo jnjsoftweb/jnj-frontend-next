@@ -25,11 +25,11 @@ export function Sidebar({ isExpandedSidebar, onMenuSelect }: SidebarProps) {
     : '';
 
   const menuItems = [
-    { name: 'Home', icon: Home },
-    { name: 'Downloads', icon: Library },
-    { name: 'Subscriptions', icon: Users },
-    { name: 'Watch later', icon: Clock },
-    { name: 'Liked videos', icon: ThumbsUp },
+    { name: 'Home', icon: Home, path: '/youtube/home' },
+    { name: 'Downloads', icon: Library, path: '/youtube/downloads' },
+    { name: 'Subscriptions', icon: Users, path: '/youtube/subscriptions' },
+    { name: 'Watch later', icon: Clock, path: '/youtube/watch-later' },
+    { name: 'Liked videos', icon: ThumbsUp, path: '/youtube/liked' },
   ];
 
   const subscriptions = mySubscriptions;
@@ -50,17 +50,18 @@ export function Sidebar({ isExpandedSidebar, onMenuSelect }: SidebarProps) {
     >
       <nav className="space-y-2 p-2 h-full overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400">
         {menuItems.map((item) => (
-          <Button
-            key={item.name}
-            variant="ghost"
-            className="w-full justify-start"
-            onClick={() => onMenuSelect(item.name)}
-          >
-            <item.icon className="h-5 w-5 mr-0 xl:mr-2" />
-            <span className={isExpandedSidebar ? 'inline' : 'hidden'}>
-              {item.name}
-            </span>
-          </Button>
+          <Link key={item.name} href={item.path}>
+            <Button
+              variant="ghost"
+              className="w-full justify-start"
+              onClick={() => onMenuSelect(item.name)}
+            >
+              <item.icon className="h-5 w-5 mr-0 xl:mr-2" />
+              <span className={isExpandedSidebar ? 'inline' : 'hidden'}>
+                {item.name}
+              </span>
+            </Button>
+          </Link>
         ))}
         <div className="my-4 border-t" />
         <h3
