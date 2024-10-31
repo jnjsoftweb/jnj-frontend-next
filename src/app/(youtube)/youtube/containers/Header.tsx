@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 interface HeaderProps {
   onMenuClick: () => void;
   isExpandedSidebar: boolean;
-  setIsExpandedSidebar: (value: boolean) => void;
+  setIsExpandedSidebar: (expanded: boolean) => void;
 }
 
 export function Header({

@@ -1,25 +1,16 @@
-import fs from 'fs/promises';
-import path from 'path';
+import { APP_URL, GRAPHQL_URL, JSON_ROOT } from './env';
 
-const JSON_ROOT = 'C:/JnJ-soft/Projects/internal/jnj-backend/db/json/youtube/';
-const GRAPHQL_URL = 'http://localhost:3007';
-
-const _fetchJson = async (filePath: string) => {
-    try {
-        const fullPath = path.resolve(filePath);
-        const data = await fs.readFile(fullPath, 'utf-8');
-        return JSON.parse(data);
-    } catch (error) {
-        console.error('Error loading JSON:', error);
-        return null;
-    }
+interface GraphQLParams {
+  url?: string;
+  query: string;
+  variables?: Record<string, unknown>;
 }
 
-const fetchJson = async (name: string) => {
-    return _fetchJson(`${JSON_ROOT}${name}.json`);
-}
-
-const fetchGraphql = async (url: string=GRAPHQL_URL, query: string, variables: any={}) => {
+const fetchGraphql = async ({
+  url = GRAPHQL_URL,
+  query,
+  variables = {},
+}: GraphQLParams) => {
   try {
     const response = await fetch(url, {
       method: 'POST',
@@ -28,7 +19,7 @@ const fetchGraphql = async (url: string=GRAPHQL_URL, query: string, variables: a
       },
       body: JSON.stringify({
         query,
-        variables
+        variables,
       }),
     });
 
@@ -47,6 +38,35 @@ const fetchGraphql = async (url: string=GRAPHQL_URL, query: string, variables: a
     console.error('GraphQL 요청 중 에러 발생:', error);
     throw error;
   }
+};
+
+interface FetchJsonOptions {
+  root?: string;
 }
 
-export { fetchJson, fetchGraphql };
+const fetchJson = async (
+  name: string,
+  { root = JSON_ROOT }: FetchJsonOptions = {}
+) => {
+  try {
+    const baseUrl =
+      typeof window !== 'undefined' ? window.location.origin : APP_URL;
+
+    const url = new URL(`/api/json`, baseUrl);
+    url.searchParams.set('name', name);
+    url.searchParams.set('root', root);
+
+    console.log(`url.toString() : ${url.toString()}`);
+
+    const response = await fetch(url.toString());
+    if (!response.ok) {
+      throw new Error('Failed to fetch JSON');
+    }
+    return response.json();
+  } catch (error) {
+    console.error('Error loading JSON:', error);
+    return null;
+  }
+};
+
+export { fetchGraphql, fetchJson };
