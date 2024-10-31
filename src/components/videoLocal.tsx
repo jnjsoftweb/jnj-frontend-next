@@ -3,13 +3,13 @@
 import React from 'react';
 import { YOUTUBE_DOWNLOADS_SLUG } from '@/service/env';
 
-interface VideoPageProps {
+interface VideoLocalProps {
     videoName: string;
     subtitleName?: string | null;
     slug?: string;
 }
 
-export default function VideoPage({videoName, subtitleName=null, slug=YOUTUBE_DOWNLOADS_SLUG}: VideoPageProps) {
+export default function VideoLocal({videoName, subtitleName=null, slug=YOUTUBE_DOWNLOADS_SLUG}: VideoLocalProps) {
     const title = videoName.split('_').slice(0, -1).join('.')
     const videoUrl = `${slug}${videoName}`
     subtitleName = subtitleName ?? videoName.replace('.mp4', '.vtt')

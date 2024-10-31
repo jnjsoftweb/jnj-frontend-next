@@ -41,11 +41,11 @@ export function Sidebar({ isExpandedSidebar, onMenuSelect }: SidebarProps) {
     <aside
       className={`fixed top-[56px] left-0 h-[calc(100vh-56px)] bg-background border-r 
         transition-all duration-300 ease-in-out 
-        ${isExpandedSidebar ? 'w-[240px]' : 'w-[88px]'}
-        md:translate-x-0 
-        ${isExpandedSidebar ? 'translate-x-0' : '-translate-x-full'}
-        ${isExpandedSidebar ? 'z-50 md:z-40' : 'z-40'}
-        ${isExpandedSidebar ? 'shadow-lg md:shadow-none' : ''}
+        ${isExpandedSidebar 
+          ? 'w-[240px] translate-x-0 shadow-lg z-50' 
+          : 'w-[88px] -translate-x-full sm:translate-x-0 z-40'
+        }
+        ${isExpandedSidebar ? 'block' : 'hidden sm:block'}
       `}
     >
       <nav className="space-y-2 p-2 h-full overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400">

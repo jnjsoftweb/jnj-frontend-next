@@ -9,7 +9,7 @@ export default function YoutubeLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [isExpandedSidebar, setIsExpandedSidebar] = useState(true);
+  const [isExpandedSidebar, setIsExpandedSidebar] = useState(false);
   const [selectedMenu, setSelectedMenu] = useState('Home');
 
   const toggleSidebar = () => {
@@ -27,17 +27,8 @@ export default function YoutubeLayout({
         isExpandedSidebar={isExpandedSidebar}
         onMenuSelect={setSelectedMenu}
       />
-      <div
-        className={`flex-1 w-full transition-all duration-300 ease-in-out 
-          ${isExpandedSidebar ? 'pl-[240px]' : 'pl-[88px]'}
-          md:pl-0
-        `}
-      >
-        <div
-          className={`w-full transition-all duration-300 ease-in-out 
-            ${isExpandedSidebar ? 'md:pl-[240px]' : 'md:pl-[88px]'}
-          `}
-        >
+      <div className="flex-1 w-full">
+        <div className={`w-full transition-all duration-300 ease-in-out pl-0 sm:pl-[88px]`}>
           <div className="max-w-[2000px] mx-auto">{children}</div>
         </div>
       </div>
