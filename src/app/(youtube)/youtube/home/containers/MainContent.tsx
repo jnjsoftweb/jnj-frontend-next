@@ -1,9 +1,46 @@
-import { useState } from 'react';
-import mostPopularVideos from '../../db/mostPopularVideos.json';
-import mySubscriptions from '../../db/mySubscriptions.json';
+'use client';
 
-export function MainContent() {
+import { useState, useEffect } from 'react';
+import { fetchJson } from '@/service/fetchData';
+
+interface Video {
+  id: string;
+  title: string;
+  thumbnail: string;
+  channelTitle: string;
+  channelThumbnail: string;
+  publishedAt: string;
+  duration: string;
+  viewCount: string;
+  likeCount: string;
+  commentCount: string | null;
+}
+
+interface MainContentProps {
+  isExpandedSidebar: boolean;
+}
+
+export function MainContent({ isExpandedSidebar }: MainContentProps) {
   const [selectedVideoId, setSelectedVideoId] = useState<string | null>(null);
+  const [videos, setVideos] = useState<Video[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadVideos = async () => {
+      try {
+        const data = await fetchJson('youtube/mostPopularVideos', {
+          root: '/backups/db/json/'
+        });
+        setVideos(data);
+      } catch (error) {
+        console.error('Error loading videos:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadVideos();
+  }, []);
 
   // 조회수를 포맷팅하는 함수
   const formatViewCount = (viewCount: string) => {
@@ -28,10 +65,14 @@ export function MainContent() {
     return `${minutes}분 전`;
   };
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
-        {mostPopularVideos.map((video) => (
+        {videos.map((video) => (
           <div
             key={video.id}
             className="space-y-2 cursor-pointer"
