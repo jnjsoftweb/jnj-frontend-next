@@ -3,5 +3,5 @@
 import { MainContent } from './containers/MainContent';
 
 export default function Page() {
-  return <MainContent />;
+  return <MainContent isExpandedSidebar={false} />;
 }
