@@ -68,7 +68,7 @@ export function ChannelTabs({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {playlistDetails.map((playlist) => (
             <div
-              key={playlist.id}
+              key={playlist.playlistId} // 고유한 key prop 추가
               className="bg-card rounded-lg overflow-hidden shadow-sm"
             >
               <img

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { fetchJson } from '@/service/fetchData';
-import { VideoCard } from '../../components/VideoCard';
+import { VideoCard } from '@/components/youtube/VideoCard';
 
 interface Channel {
   channelId: string;

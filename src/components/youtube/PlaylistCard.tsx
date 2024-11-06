@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getRelativeTime } from '@/lib/youtube-utils';
+import { getRelativeTime } from '@/utils/youtube';
 
 interface PlaylistProps {
   playlist: {

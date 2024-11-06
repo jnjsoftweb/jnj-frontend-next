@@ -9,6 +9,7 @@ import {
   GQL_CHANNEL_DETAIL,
 } from '@/queries/gql/youtube';
 import { ChannelTabs } from '@/components/youtube/ChannelTabs';
+import { PlaylistCard } from '@/components/youtube/PlaylistCard';
 
 interface Props {
   params: {
@@ -16,7 +17,7 @@ interface Props {
   };
 }
 
-export default function ChannelInfoPage({ params }: Props) {
+export default function ChannelPlaylistPage({ params }: Props) {
   const [videoDetails, setVideoDetails] = useState<VideoDetail[]>([]);
   const [playlistDetails, setPlaylistDetails] = useState<PlaylistDetail[]>([]);
   const [channelDetail, setChannelDetail] = useState<ChannelDetail | null>(
@@ -47,7 +48,12 @@ export default function ChannelInfoPage({ params }: Props) {
         ]);
 
         setVideoDetails(videosData.youtubeVideosByChannelId);
-        setPlaylistDetails(playlistsData.youtubePlaylistByChannelId);
+        
+        const uniquePlaylists = Array.from(
+          new Map(playlistsData.youtubePlaylistByChannelId.map((playlist) => [playlist.playlistId, playlist])).values()
+        );
+        setPlaylistDetails(uniquePlaylists);
+        
         setChannelDetail(channelData.youtubeChannelById);
         setLoading(false);
       } catch (err) {
@@ -67,6 +73,9 @@ export default function ChannelInfoPage({ params }: Props) {
   if (error) return <div>에러: {error}</div>;
   if (!channelDetail) return <div>채널 정보를 찾을 수 없습니다.</div>;
 
+  console.log('Playlist Details:', playlistDetails);
+  console.log('Number of Playlists:', playlistDetails.length);
+
   return (
     <main className="min-h-screen p-4">
       <div className="max-w-7xl mx-auto">
@@ -76,9 +85,14 @@ export default function ChannelInfoPage({ params }: Props) {
             channelDetail={channelDetail}
             videoDetails={videoDetails}
             playlistDetails={playlistDetails}
-            defaultValue="about"
+            defaultValue="playlists"
             channelId={params.channelId}
           />
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {playlistDetails.map((playlist) => (
+            <PlaylistCard key={playlist.playlistId} playlist={playlist} />
+          ))}
         </div>
       </div>
     </main>

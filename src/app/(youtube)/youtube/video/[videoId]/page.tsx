@@ -3,27 +3,11 @@
 import { useEffect, useState } from 'react';
 import { GQL_VIDEO_DETAIL } from '@/queries/gql/youtube';
 import { fetchGraphql } from '@/service/fetchData';
-import { VideoPopupMenu } from '../../components/VideoPopupMenu';
-import { formatViewCount, getRelativeTime } from '@/lib/youtube-utils';
+import { VideoPopupMenu } from '@/components/youtube/VideoPopupMenu';
+import { formatViewCount, getRelativeTime } from '@/utils/youtube';
+import { VideoDetail } from '@/types/youtube';
 import Link from 'next/link';
-
-interface VideoDetail {
-  video: {
-    videoId: string;
-    title: string;
-    description: string;
-    thumbnail: string;
-    publishedAt: string;
-    duration: string;
-    viewCount: string;
-    likeCount: string;
-  };
-  channel: {
-    channelId: string;
-    title: string;
-    thumbnail: string;
-  };
-}
+import Layout from '@/components/youtube/Layout';
 
 export default function VideoPage({ params }: { params: { videoId: string } }) {
   const [videoDetail, setVideoDetail] = useState<VideoDetail | null>(null);
@@ -60,8 +44,8 @@ export default function VideoPage({ params }: { params: { videoId: string } }) {
   if (!videoDetail) return <div>동영상을 찾을 수 없습니다.</div>;
 
   return (
-    <div className="flex-1 p-4">
-      <div className="max-w-[1280px] mx-auto">
+    <Layout isVideoPage={true}>
+      <div className="max-w-full mx-auto">
         <div className="aspect-video w-full mb-4">
           <iframe
             width="100%"
@@ -108,6 +92,6 @@ export default function VideoPage({ params }: { params: { videoId: string } }) {
           <p className="whitespace-pre-wrap">{videoDetail.video.description}</p>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 }

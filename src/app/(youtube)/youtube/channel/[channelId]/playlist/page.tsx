@@ -8,7 +8,8 @@ import {
   GQL_PLAYLISTS_BY_CHANNELID,
   GQL_CHANNEL_DETAIL,
 } from '@/queries/gql/youtube';
-import { ChannelTabs } from '../../../components/ChannelTabs';
+import { ChannelTabs } from '@/components/youtube/ChannelTabs';
+import { PlaylistCard } from '@/components/youtube/PlaylistCard';
 
 interface Props {
   params: {
@@ -47,7 +48,9 @@ export default function ChannelPlaylistPage({ params }: Props) {
         ]);
 
         setVideoDetails(videosData.youtubeVideosByChannelId);
+        
         setPlaylistDetails(playlistsData.youtubePlaylistByChannelId);
+        
         setChannelDetail(channelData.youtubeChannelById);
         setLoading(false);
       } catch (err) {

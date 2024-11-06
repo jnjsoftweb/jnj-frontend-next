@@ -8,7 +8,7 @@ import {
   GQL_PLAYLISTS_BY_CHANNELID,
   GQL_CHANNEL_DETAIL,
 } from '@/queries/gql/youtube';
-import { ChannelTabs } from '../../components/ChannelTabs';
+import { ChannelTabs } from '@/components/youtube/ChannelTabs';
 
 interface Props {
   params: {
