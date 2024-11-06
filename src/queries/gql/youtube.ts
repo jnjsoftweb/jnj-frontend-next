@@ -61,9 +61,9 @@ const GQL_PLAYLISTS_BY_CHANNELID = `
   }
 `;
 
-const channelId = {
-  channelId: 'UCUpJs89fSBXNolQGOYKn0YQ',
-};
+// const channelId = {
+//   channelId: 'UCUpJs89fSBXNolQGOYKn0YQ',
+// };
 
 // const VIDEOS_BY_CHANNELID = `
 //   query GetVideoDetailsByChannelId($channelId: String!, $maxItems: Int) {
@@ -130,6 +130,28 @@ const VIDEOS_BY_PLAYLISTID = `
   }
 `;
 
+const GQL_VIDEO_DETAIL = `
+  query GetVideoDetailById($videoId: String!) {
+    youtubeVideoById(videoId: $videoId) {
+      video {
+        videoId
+        title
+        description
+        thumbnail
+        publishedAt
+        viewCount
+        likeCount
+      }
+      channel {
+        channelId
+        title
+        description
+        thumbnail
+      }
+    }
+  }
+`;
+
 export {
   GQL_ALL_CHANNELS,
   GQL_CHANNEL_DETAIL,
@@ -137,5 +159,6 @@ export {
   GQL_PLAYLISTS_BY_CHANNELID,
   VIDEOS_BY_CHANNELID,
   VIDEOS_BY_PLAYLISTID,
-  channelId,
+  GQL_VIDEO_DETAIL,
+  // channelId,
 };

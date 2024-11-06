@@ -29,6 +29,7 @@ C:\JnJ-soft\Projects\internal\_next_template\.prettierrc
 C:\JnJ-soft\Projects\internal\jnj-frontend-next
 
 npx shadcn@latest add button card switch
+npx shadcn@latest add dropdown-menu
 ```
 
 ## button 컴포넌트 테스트

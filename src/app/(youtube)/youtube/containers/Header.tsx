@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, Menu, Video, User, ArrowLeft } from 'lucide-react';
+import { Search, Menu, Video, User, ArrowLeft, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -70,6 +70,9 @@ export function Header({
               </Button>
               <Button variant="ghost" size="icon">
                 <User className="h-6 w-6" />
+              </Button>
+              <Button variant="ghost" size="icon">
+                <Settings className="h-6 w-6" />
               </Button>
             </div>
           </>

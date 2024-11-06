@@ -9,8 +9,8 @@ import {
 } from '@/queries/gql/youtube';
 import { fetchGraphql } from '@/service/fetchData';
 // import Link from 'next/link';
-import { PlaylistCard } from '@/app/(youtube)/youtube/components/PlaylistCard';
-import { VideoCard } from '@/app/(youtube)/youtube/components/VideoCard';
+import { PlaylistCard } from '../../components/PlaylistCard';
+import { VideoCard } from '../../components/VideoCard';
 
 interface Video {
   video: {
