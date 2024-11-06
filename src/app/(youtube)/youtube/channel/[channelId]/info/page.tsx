@@ -8,7 +8,7 @@ import {
   GQL_PLAYLISTS_BY_CHANNELID,
   GQL_CHANNEL_DETAIL,
 } from '@/queries/gql/youtube';
-import { ChannelTabs } from '../../components/ChannelTabs';
+import { ChannelTabs } from '../../../components/ChannelTabs';
 
 interface Props {
   params: {
@@ -16,7 +16,7 @@ interface Props {
   };
 }
 
-export default function ChannelPage({ params }: Props) {
+export default function ChannelInfoPage({ params }: Props) {
   const [videoDetails, setVideoDetails] = useState<VideoDetail[]>([]);
   const [playlistDetails, setPlaylistDetails] = useState<PlaylistDetail[]>([]);
   const [channelDetail, setChannelDetail] = useState<ChannelDetail | null>(
@@ -76,7 +76,7 @@ export default function ChannelPage({ params }: Props) {
             channelDetail={channelDetail}
             videoDetails={videoDetails}
             playlistDetails={playlistDetails}
-            defaultValue="videos"
+            defaultValue="about"
             channelId={params.channelId}
           />
         </div>

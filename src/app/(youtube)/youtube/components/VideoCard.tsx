@@ -1,31 +1,11 @@
 import { formatViewCount, getRelativeTime } from '@/lib/youtube-utils';
 import Link from 'next/link';
 import { VideoPopupMenu } from './VideoPopupMenu';
-import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-
-interface Channel {
-  channelId: string;
-  title: string;
-  thumbnail: string;
-}
-
-interface VideoData {
-  video: {
-    videoId: string;
-    title: string;
-    description: string;
-    thumbnail: string;
-    publishedAt: string;
-    duration: string;
-    viewCount: string;
-    likeCount: string;
-  };
-  channel: Channel;
-}
+import { VideoDetail } from '@/types/youtube';
 
 interface VideoCardProps {
-  video: VideoData;
+  video: VideoDetail;
   onVideoClick?: (videoId: string) => void;
 }
 

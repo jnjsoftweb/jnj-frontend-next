@@ -1,54 +1,35 @@
-const srtToVtt = (srtContent: string): string => {
-    // 줄 단위로 분리
-    const lines = srtContent.split('\n');
-    
-    // 숫자만 있는 줄 제거
-    const filteredLines = lines.filter(line => {
-        const trimmed = line.trim();
-        return !(trimmed !== '' && !isNaN(Number(trimmed)));
-    });
-    
-    // 콤마를 점으로 변경
-    const content = filteredLines.join('\n').replace(/,/g, '.');
-    
-    // WEBVTT 헤더 추가
-    return `WEBVTT\n\n${content}`;
-};
+export function formatViewCount(viewCount: string): string {
+  const count = parseInt(viewCount, 10);
 
-// 파일 시스템 작업을 위한 함수 (Node.js 환경에서 사용)
-const convertSrtFileToVtt = async (srtPath: string, vttPath: string): Promise<void> => {
-    try {
-        const fs = require('fs').promises;
-        
-        // SRT 파일 읽기
-        const srtContent = await fs.readFile(srtPath, 'utf-8');
-        
-        // VTT로 변환
-        const vttContent = srtToVtt(srtContent);
-        
-        // VTT 파일 저장
-        await fs.writeFile(vttPath, vttContent, 'utf-8');
-        
-        console.log('변환이 완료되었습니다.');
-    } catch (error) {
-        console.error('변환 중 오류가 발생했습니다:', error);
-        throw error;
-    }
-};
+  if (count >= 100000000) {
+    return `${Math.floor(count / 100000000)}억`;
+  }
+  if (count >= 10000) {
+    return `${Math.floor(count / 10000)}만`;
+  }
+  if (count >= 1000) {
+    return `${Math.floor(count / 1000)}천`;
+  }
 
-// 브라우저에서 파일 변환하기
-const handleFileConversion = async (srtFile: File): Promise<string> => {
-    const text = await srtFile.text();
-    return srtToVtt(text);
-};
+  return viewCount;
+}
 
+export function getRelativeTime(dateString: string): string {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diff = now.getTime() - date.getTime();
 
-export { convertSrtFileToVtt, handleFileConversion };
+  const seconds = Math.floor(diff / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+  const months = Math.floor(days / 30);
+  const years = Math.floor(days / 365);
 
-// 사용 예시:
-// const fileInput = document.querySelector('input[type="file"]');
-// fileInput.addEventListener('change', async (e) => {
-//     const file = e.target.files[0];
-//     const vttContent = await handleFileConversion(file);
-//     // vttContent 사용
-// });
+  if (years > 0) return `${years}년 전`;
+  if (months > 0) return `${months}개월 전`;
+  if (days > 0) return `${days}일 전`;
+  if (hours > 0) return `${hours}시간 전`;
+  if (minutes > 0) return `${minutes}분 전`;
+  return `${seconds}초 전`;
+}
