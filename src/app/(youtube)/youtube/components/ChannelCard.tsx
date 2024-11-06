@@ -1,58 +1,44 @@
-interface Channel {
-  id: string;
-  title: string;
-  thumbnail: string;
-  subscriberCount: string;
-  viewCount: string;
-  videoCount: string;
-  description: string;
-  customUrl: string;
-}
+import Link from 'next/link';
+import { formatViewCount } from '@/lib/youtube-utils';
 
 interface ChannelCardProps {
-  channel: Channel;
+  channel: {
+    id: string;
+    title: string;
+    thumbnail: string;
+    subscriberCount: string;
+    viewCount: string;
+    videoCount: string;
+    description: string;
+    customUrl: string;
+  };
 }
 
-const ChannelCard = ({ channel }: ChannelCardProps) => {
+export default function ChannelCard({ channel }: ChannelCardProps) {
   return (
-    <div className="flex flex-col p-6 rounded-xl border border-gray-200 hover:border-gray-300 hover:shadow-lg transition-all duration-200 bg-white w-full min-w-[300px]">
-      <div className="flex flex-col items-center">
-        <img 
-          src={channel.thumbnail} 
-          alt={channel.title}
-          className="w-32 h-32 rounded-full mb-4 border-2 border-gray-100"
-        />
-        <h3 className="text-lg font-semibold text-center mb-1">{channel.title}</h3>
-        <a 
-          href={`https://youtube.com/${channel.customUrl}`} 
-          className="text-sm text-gray-500 hover:text-blue-500 mb-3"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {channel.customUrl.replace('@@', '@')}
-        </a>
-      </div>
-      
-      <div className="flex flex-col gap-2 mb-4 text-sm text-gray-600">
-        <div className="flex justify-between px-4">
-          <span>구독자</span>
-          <span className="font-medium">{Number(channel.subscriberCount).toLocaleString()}명</span>
+    <Link href={`/youtube/channel/${channel.id}`}>
+      <div className="border rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer">
+        <div className="flex items-center gap-4 mb-4">
+          <img
+            src={channel.thumbnail}
+            alt={channel.title}
+            className="w-16 h-16 rounded-full"
+          />
+          <div>
+            <h2 className="font-semibold">{channel.title}</h2>
+            <p className="text-sm text-muted-foreground">
+              @{channel.customUrl.replace('@', '')}
+            </p>
+          </div>
         </div>
-        <div className="flex justify-between px-4">
-          <span>동영상</span>
-          <span className="font-medium">{Number(channel.videoCount).toLocaleString()}개</span>
-        </div>
-        <div className="flex justify-between px-4">
-          <span>총 조회수</span>
-          <span className="font-medium">{Number(channel.viewCount).toLocaleString()}회</span>
+        <p className="text-sm text-muted-foreground mb-2 line-clamp-2">
+          {channel.description}
+        </p>
+        <div className="text-sm text-muted-foreground">
+          <p>구독자 {formatViewCount(channel.subscriberCount)}명</p>
+          <p>동영상 {channel.videoCount}개</p>
         </div>
       </div>
-      
-      <p className="text-sm text-gray-600 line-clamp-2 text-center">
-        {channel.description}
-      </p>
-    </div>
+    </Link>
   );
-};
-
-export default ChannelCard; 
+}

@@ -8,19 +8,26 @@ import {
   GQL_CHANNEL_DETAIL,
 } from '@/queries/gql/youtube';
 import { fetchGraphql } from '@/service/fetchData';
-import Link from 'next/link';
+// import Link from 'next/link';
+import { PlaylistCard } from '@/app/(youtube)/youtube/components/PlaylistCard';
+import { VideoCard } from '@/app/(youtube)/youtube/components/VideoCard';
 
 interface Video {
-  id: string;
-  title: string;
-  description: string;
-  thumbnail: string;
-  channelTitle: string;
-  publishedAt: string;
-  duration: string;
-  viewCount: string;
-  likeCount: string;
-  commentCount: string;
+  video: {
+    videoId: string;
+    title: string;
+    description: string;
+    thumbnail: string;
+    publishedAt: string;
+    duration: string;
+    viewCount: string;
+    likeCount: string;
+  };
+  channel: {
+    channelId: string;
+    title: string;
+    thumbnail: string;
+  };
 }
 
 interface Playlist {
@@ -160,38 +167,7 @@ export default function ChannelPage({
         <TabsContent value="videos">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {videos.map((video) => (
-              <div key={video.video.videoId} className="space-y-2">
-                <div className="relative group">
-                  <div className="aspect-video bg-muted rounded-lg overflow-hidden">
-                    <img
-                      src={video.video.thumbnail}
-                      alt={video.video.title}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  {video.video.duration && (
-                    <div className="absolute bottom-1 right-1 bg-black/80 text-white text-xs px-1 rounded">
-                      {video.video.duration
-                        ?.replace('PT', '')
-                        ?.replace('H', ':')
-                        ?.replace('M', ':')
-                        ?.replace('S', '')}
-                    </div>
-                  )}
-                </div>
-                <div className="space-y-1">
-                  <h3 className="font-medium line-clamp-2 text-sm">
-                    {video.video.title}
-                  </h3>
-                  <div className="text-sm text-muted-foreground">
-                    <div>{video.channel.title}</div>
-                    <div>
-                      조회수 {formatViewCount(video.video.viewCount)}회 •{' '}
-                      {getRelativeTime(video.video.publishedAt)}
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <VideoCard key={video.video.videoId} video={video} />
             ))}
           </div>
         </TabsContent>
@@ -200,29 +176,7 @@ export default function ChannelPage({
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {playlists && playlists.length > 0 ? (
               playlists.map((playlist) => (
-                <Link
-                  key={playlist.playlistId}
-                  href={`/youtube/playlist/${playlist.playlistId}`}
-                  className="block"
-                >
-                  <div className="border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
-                    <img
-                      src={playlist.thumbnail}
-                      alt={playlist.title}
-                      className="w-full h-48 object-cover rounded-md mb-2"
-                    />
-                    <h2 className="text-lg font-semibold mb-2">
-                      {playlist.title}
-                    </h2>
-                    <p className="text-gray-600 mb-2 line-clamp-2">
-                      {playlist.description}
-                    </p>
-                    <div className="text-sm text-gray-500">
-                      <p>동영상 {playlist.itemCount}개</p>
-                      <p>업데이트: {getRelativeTime(playlist.publishedAt)}</p>
-                    </div>
-                  </div>
-                </Link>
+                <PlaylistCard key={playlist.playlistId} playlist={playlist} />
               ))
             ) : (
               <div>재생목록이 없습니다.</div>
