@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   VIDEOS_BY_CHANNELID,
-  PLAYLISTS_BY_CHANNELID,
-  CHANNEL_DETAIL_BY_ID,
+  GQL_PLAYLISTS_BY_CHANNELID,
+  GQL_CHANNEL_DETAIL,
 } from '@/queries/gql/youtube';
 import { fetchGraphql } from '@/service/fetchData';
 import Link from 'next/link';
@@ -67,18 +67,18 @@ export default function ChannelPage({
             },
           }),
           fetchGraphql({
-            query: PLAYLISTS_BY_CHANNELID,
+            query: GQL_PLAYLISTS_BY_CHANNELID,
             variables: { channelId: params.channelId },
           }),
           fetchGraphql({
-            query: CHANNEL_DETAIL_BY_ID,
+            query: GQL_CHANNEL_DETAIL,
             variables: { channelId: params.channelId },
           }),
         ]);
 
-        setVideos(videosData.youtubeGetVideoDetailsByChannelId);
-        setPlaylists(playlistsData.youtubeGetPlaylistsByChannelId);
-        setChannelDetail(channelData.youtubeChannelDetail);
+        setVideos(videosData.youtubeVideosByChannelId);
+        setPlaylists(playlistsData.youtubePlaylistByChannelId);
+        setChannelDetail(channelData.youtubeChannelById);
         setLoading(false);
       } catch (err) {
         setError(
@@ -160,32 +160,34 @@ export default function ChannelPage({
         <TabsContent value="videos">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {videos.map((video) => (
-              <div key={video.id} className="space-y-2">
+              <div key={video.video.videoId} className="space-y-2">
                 <div className="relative group">
                   <div className="aspect-video bg-muted rounded-lg overflow-hidden">
                     <img
-                      src={video.thumbnail}
-                      alt={video.title}
+                      src={video.video.thumbnail}
+                      alt={video.video.title}
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <div className="absolute bottom-1 right-1 bg-black/80 text-white text-xs px-1 rounded">
-                    {video.duration
-                      .replace('PT', '')
-                      .replace('H', ':')
-                      .replace('M', ':')
-                      .replace('S', '')}
-                  </div>
+                  {video.video.duration && (
+                    <div className="absolute bottom-1 right-1 bg-black/80 text-white text-xs px-1 rounded">
+                      {video.video.duration
+                        ?.replace('PT', '')
+                        ?.replace('H', ':')
+                        ?.replace('M', ':')
+                        ?.replace('S', '')}
+                    </div>
+                  )}
                 </div>
                 <div className="space-y-1">
                   <h3 className="font-medium line-clamp-2 text-sm">
-                    {video.title}
+                    {video.video.title}
                   </h3>
                   <div className="text-sm text-muted-foreground">
-                    <div>{video.channelTitle}</div>
+                    <div>{video.channel.title}</div>
                     <div>
-                      조회수 {formatViewCount(video.viewCount)}회 •{' '}
-                      {getRelativeTime(video.publishedAt)}
+                      조회수 {formatViewCount(video.video.viewCount)}회 •{' '}
+                      {getRelativeTime(video.video.publishedAt)}
                     </div>
                   </div>
                 </div>
@@ -196,31 +198,35 @@ export default function ChannelPage({
 
         <TabsContent value="playlists">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {playlists.map((playlist) => (
-              <Link
-                key={playlist.id}
-                href={`/youtube/playlist/${playlist.id}`}
-                className="block"
-              >
-                <div className="border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
-                  <img
-                    src={playlist.thumbnail}
-                    alt={playlist.title}
-                    className="w-full h-48 object-cover rounded-md mb-2"
-                  />
-                  <h2 className="text-lg font-semibold mb-2">
-                    {playlist.title}
-                  </h2>
-                  <p className="text-gray-600 mb-2 line-clamp-2">
-                    {playlist.description}
-                  </p>
-                  <div className="text-sm text-gray-500">
-                    <p>동영상 {playlist.itemCount}개</p>
-                    <p>업데이트: {getRelativeTime(playlist.publishedAt)}</p>
+            {playlists && playlists.length > 0 ? (
+              playlists.map((playlist) => (
+                <Link
+                  key={playlist.playlistId}
+                  href={`/youtube/playlist/${playlist.playlistId}`}
+                  className="block"
+                >
+                  <div className="border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
+                    <img
+                      src={playlist.thumbnail}
+                      alt={playlist.title}
+                      className="w-full h-48 object-cover rounded-md mb-2"
+                    />
+                    <h2 className="text-lg font-semibold mb-2">
+                      {playlist.title}
+                    </h2>
+                    <p className="text-gray-600 mb-2 line-clamp-2">
+                      {playlist.description}
+                    </p>
+                    <div className="text-sm text-gray-500">
+                      <p>동영상 {playlist.itemCount}개</p>
+                      <p>업데이트: {getRelativeTime(playlist.publishedAt)}</p>
+                    </div>
                   </div>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              ))
+            ) : (
+              <div>재생목록이 없습니다.</div>
+            )}
           </div>
         </TabsContent>
       </Tabs>

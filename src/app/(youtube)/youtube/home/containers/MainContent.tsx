@@ -1,9 +1,20 @@
-import { useState } from 'react';
-import mostPopularVideos from '../../db/mostPopularVideos.json';
-import mySubscriptions from '../../db/mySubscriptions.json';
+import { useEffect, useState } from 'react';
+import { fetchJson } from '@/service/fetchData';
 
 export function MainContent() {
   const [selectedVideoId, setSelectedVideoId] = useState<string | null>(null);
+  const [mostPopularVideos, setMostPopularVideos] = useState([]);
+
+  useEffect(() => {
+    const fetchVideos = async () => {
+      const data = await fetchJson('mostPopularVideos');
+      if (data) {
+        setMostPopularVideos(data);
+      }
+    };
+
+    fetchVideos();
+  }, []);
 
   // 조회수를 포맷팅하는 함수
   const formatViewCount = (viewCount: string) => {
@@ -33,9 +44,9 @@ export function MainContent() {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
         {mostPopularVideos.map((video) => (
           <div
-            key={video.id}
+            key={video.videoId}
             className="space-y-2 cursor-pointer"
-            onClick={() => setSelectedVideoId(video.id)}
+            onClick={() => setSelectedVideoId(video.videoId)}
           >
             {/* 기존 비디오 카드 내용 */}
             <div className="relative group">

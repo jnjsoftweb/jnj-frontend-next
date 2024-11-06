@@ -4,16 +4,24 @@ import { useState, useEffect } from 'react';
 import { VIDEOS_BY_PLAYLISTID } from '@/queries/gql/youtube';
 import { fetchGraphql } from '@/service/fetchData';
 
-interface Video {
-  id: string;
+interface Channel {
+  channelId: string;
   title: string;
-  description: string;
   thumbnail: string;
-  channelTitle: string;
-  publishedAt: string;
-  duration: string;
-  viewCount: string;
-  likeCount: string;
+}
+
+interface Video {
+  video: {
+    videoId: string;
+    title: string;
+    description: string;
+    thumbnail: string;
+    publishedAt: string;
+    duration: string;
+    viewCount: string;
+    likeCount: string;
+  };
+  channel: Channel;
 }
 
 export default function PlaylistPage({
@@ -32,8 +40,11 @@ export default function PlaylistPage({
           query: VIDEOS_BY_PLAYLISTID,
           variables: { playlistId: params.playlistId },
         });
-        setVideos(data.youtubeGetVideoDetailsByPlaylistId);
-        setLoading(false);
+
+        if (data?.youtubeVideosByPlaylistId) {
+          setVideos(data.youtubeVideosByPlaylistId);
+          setLoading(false);
+        }
       } catch (err) {
         setError(
           err instanceof Error
@@ -84,12 +95,12 @@ export default function PlaylistPage({
     <div className="p-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {videos.map((video) => (
-          <div key={video.id} className="space-y-2">
+          <div key={video.video.videoId} className="space-y-2">
             <div className="relative group">
               <div className="aspect-video bg-muted rounded-lg overflow-hidden">
                 <img
-                  src={video.thumbnail}
-                  alt={video.title}
+                  src={video.video.thumbnail}
+                  alt={video.video.title}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -99,13 +110,13 @@ export default function PlaylistPage({
             </div>
             <div className="space-y-1">
               <h3 className="font-medium line-clamp-2 text-sm">
-                {video.title}
+                {video.video.title}
               </h3>
               <div className="text-sm text-muted-foreground">
-                <div>{video.channelTitle}</div>
+                <div>{video.channel.title}</div>
                 <div>
-                  조회수 {formatViewCount(video.viewCount)}회 •{' '}
-                  {getRelativeTime(video.publishedAt)}
+                  조회수 {formatViewCount(video.video.viewCount)}회 •{' '}
+                  {getRelativeTime(video.video.publishedAt)}
                 </div>
               </div>
             </div>

@@ -7,10 +7,13 @@ import {
   ChevronDown,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import mySubscriptions from '../db/mySubscriptions.json';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { fetchGraphql } from '@/service/fetchData';
+import { GQL_CHANNELS_BY_USERID } from '@/queries/gql/youtube';
+
+const userId = 'mooninlearn';
 
 interface SidebarProps {
   isExpandedSidebar: boolean;
@@ -23,6 +26,30 @@ export function Sidebar({ isExpandedSidebar, onMenuSelect }: SidebarProps) {
   const currentChannelId = pathname?.includes('/channel/')
     ? pathname.split('/channel/')[1]
     : '';
+  const [subscriptions, setSubscriptions] = useState([]);
+
+  useEffect(() => {
+    const fetchSubscriptions = async () => {
+      try {
+        const variables = {
+          userId, // 실제 사용할 userId 값으로 변경 필요
+        };
+
+        const data = await fetchGraphql({
+          query: GQL_CHANNELS_BY_USERID,
+          variables,
+        });
+
+        if (data?.youtubeChannelsByUserId) {
+          setSubscriptions(data.youtubeChannelsByUserId);
+        }
+      } catch (error) {
+        console.error('구독 정보를 불러오는데 실패했습니다:', error);
+      }
+    };
+
+    fetchSubscriptions();
+  }, []);
 
   const menuItems = [
     { name: 'Home', icon: Home, path: '/youtube/home' },
@@ -32,7 +59,6 @@ export function Sidebar({ isExpandedSidebar, onMenuSelect }: SidebarProps) {
     { name: 'Liked videos', icon: ThumbsUp, path: '/youtube/liked' },
   ];
 
-  const subscriptions = mySubscriptions;
   const displayedSubscriptions = showAllSubscriptions
     ? subscriptions
     : subscriptions.slice(0, 6);
@@ -41,9 +67,10 @@ export function Sidebar({ isExpandedSidebar, onMenuSelect }: SidebarProps) {
     <aside
       className={`fixed top-[56px] left-0 h-[calc(100vh-56px)] bg-background border-r 
         transition-all duration-300 ease-in-out 
-        ${isExpandedSidebar 
-          ? 'w-[240px] translate-x-0 shadow-lg z-50' 
-          : 'w-[88px] -translate-x-full sm:translate-x-0 z-40'
+        ${
+          isExpandedSidebar
+            ? 'w-[240px] translate-x-0 shadow-lg z-50'
+            : 'w-[88px] -translate-x-full sm:translate-x-0 z-40'
         }
         ${isExpandedSidebar ? 'block' : 'hidden sm:block'}
       `}
@@ -72,11 +99,16 @@ export function Sidebar({ isExpandedSidebar, onMenuSelect }: SidebarProps) {
           구독
         </h3>
         {displayedSubscriptions.map((channel) => (
-          <Link key={channel.id} href={`/youtube/channel/${channel.id}`}>
+          <Link
+            key={channel.channelId}
+            href={`/youtube/channel/${channel.channelId}`}
+          >
             <Button
-              variant={channel.id === currentChannelId ? 'secondary' : 'ghost'}
+              variant={
+                channel.channelId === currentChannelId ? 'secondary' : 'ghost'
+              }
               className={`w-full justify-start gap-2 ${
-                channel.id === currentChannelId
+                channel.channelId === currentChannelId
                   ? 'bg-accent hover:bg-accent/80'
                   : 'hover:bg-accent/10'
               }`}
