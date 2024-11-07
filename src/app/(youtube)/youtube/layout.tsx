@@ -31,7 +31,7 @@ export default function YoutubeLayout({
         <div
           className={`w-full transition-all duration-300 ease-in-out pl-0 sm:pl-[88px]`}
         >
-          <div className="max-w-[4000px] mx-auto">{children}</div>
+          <div className="max-w-[2000px] mx-auto">{children}</div>
         </div>
       </div>
     </div>

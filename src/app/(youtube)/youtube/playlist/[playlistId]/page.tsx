@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { VIDEOS_BY_PLAYLISTID } from '@/queries/gql/youtube';
 import { fetchGraphql } from '@/service/fetchData';
-import { VideoCard } from '@/components/youtube/VideoCard';
+import { VideoCard } from '@/app/(youtube)/youtube/components/VideoCard';
 
 interface Channel {
   channelId: string;

@@ -1,8 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useRouter } from 'next/navigation';
 import { VideoDetail, PlaylistDetail, ChannelDetail } from '@/types/youtube';
-import { VideoCard } from '@/components/youtube/VideoCard';
-import { PlaylistCard } from '@/components/youtube/PlaylistCard';
+import { VideoCard } from './VideoCard';
 
 interface ChannelTabsProps {
   channelDetail: ChannelDetail;
@@ -68,17 +67,24 @@ export function ChannelTabs({
       <TabsContent value="playlists">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {playlistDetails.map((playlist) => (
-            <PlaylistCard
+            <div
               key={playlist.playlistId}
-              playlist={{
-                playlistId: playlist.playlistId,
-                title: playlist.title,
-                description: playlist.description || '',
-                thumbnail: playlist.thumbnail,
-                publishedAt: playlist.publishedAt,
-                itemCount: playlist.itemCount,
-              }}
-            />
+              className="bg-card rounded-lg overflow-hidden shadow-sm"
+            >
+              <img
+                src={playlist.thumbnail}
+                alt={playlist.title}
+                className="w-full aspect-video object-cover"
+              />
+              <div className="p-4">
+                <h3 className="font-semibold text-lg mb-2 line-clamp-2">
+                  {playlist.title}
+                </h3>
+                <p className="text-sm text-gray-500">
+                  동영상 {playlist.itemCount}개
+                </p>
+              </div>
+            </div>
           ))}
         </div>
       </TabsContent>

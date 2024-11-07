@@ -1,11 +1,3 @@
-interface UserInfo {
-  userId: string;
-  name: string;
-  email: string;
-  thumbnail: string;
-  password: string;
-}
-
 interface VideoDetail {
   video: {
     videoId: string;
@@ -43,4 +35,4 @@ interface ChannelDetail {
   thumbnail: string;
 }
 
-export type { UserInfo, VideoDetail, PlaylistDetail, ChannelDetail };
+export type { VideoDetail, PlaylistDetail, ChannelDetail };
