@@ -6,7 +6,7 @@
 
 ```sh
 # 디렉토리 생성
-mkdir C:\JnJ-soft\Projects\internal\jnj-frontend-next\public\links
+mkdir C:\JnJ-soft\Projects\internal\jnj-frontend-next\public\links\youtube
 
 # symbolic link 생성
 mklink /d "C:\JnJ-soft\Projects\internal\jnj-frontend-next\public\links\youtube\downloads" "C:\JnJ-soft\Projects\internal\jnj-backend\downloads"

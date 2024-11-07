@@ -1,0 +1,1 @@
+http://localhost:3000/youtube/localVideo/🤖블로그 자동화 시리즈(+블로그 팁)_PLqSw3o2OV6pzr8U1BJSCwyosUi0oNiJ9Z/⚡ 블로그 시간 단축의 마법,GPT로 초고속 작업 (자동화 시리즈 2⧸4)_RTL_zB-_DUc.mp4
