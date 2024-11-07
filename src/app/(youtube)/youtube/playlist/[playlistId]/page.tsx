@@ -3,15 +3,34 @@
 import { useState, useEffect } from 'react';
 import { VIDEOS_BY_PLAYLISTID } from '@/queries/gql/youtube';
 import { fetchGraphql } from '@/service/fetchData';
-import { VideoCard } from '@/components/youtube/VideoCard';
-import { VideoDetail } from '@/types/youtube';
+import { VideoCard } from '@/app/(youtube)/youtube/components/VideoCard';
+
+interface Channel {
+  channelId: string;
+  title: string;
+  thumbnail: string;
+}
+
+interface Video {
+  video: {
+    videoId: string;
+    title: string;
+    description: string;
+    thumbnail: string;
+    publishedAt: string;
+    duration: string;
+    viewCount: string;
+    likeCount: string;
+  };
+  channel: Channel;
+}
 
 export default function PlaylistPage({
   params,
 }: {
   params: { playlistId: string };
 }) {
-  const [videos, setVideos] = useState<VideoDetail[]>([]);
+  const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

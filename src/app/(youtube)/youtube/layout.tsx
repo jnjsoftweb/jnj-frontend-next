@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Header } from '@/containers/youtube/Header';
-import { Sidebar } from '@/containers/youtube/Sidebar';
+import { Header } from './containers/Header';
+import { Sidebar } from './containers/Sidebar';
 
 export default function YoutubeLayout({
   children,
