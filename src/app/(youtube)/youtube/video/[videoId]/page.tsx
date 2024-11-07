@@ -4,26 +4,9 @@ import { useEffect, useState } from 'react';
 import { GQL_VIDEO_DETAIL } from '@/queries/gql/youtube';
 import { fetchGraphql } from '@/service/fetchData';
 import { VideoPopupMenu } from '@/components/youtube/VideoPopupMenu';
-import { formatViewCount, getRelativeTime } from '@/lib/youtube-utils';
+import { formatViewCount, getRelativeTime } from '@/utils/youtube';
+import { VideoDetail } from '@/types/youtube';
 import Link from 'next/link';
-
-interface VideoDetail {
-  video: {
-    videoId: string;
-    title: string;
-    description: string;
-    thumbnail: string;
-    publishedAt: string;
-    duration: string;
-    viewCount: string;
-    likeCount: string;
-  };
-  channel: {
-    channelId: string;
-    title: string;
-    thumbnail: string;
-  };
-}
 
 export default function VideoPage({ params }: { params: { videoId: string } }) {
   const [videoDetail, setVideoDetail] = useState<VideoDetail | null>(null);
@@ -59,9 +42,10 @@ export default function VideoPage({ params }: { params: { videoId: string } }) {
   if (error) return <div>에러: {error}</div>;
   if (!videoDetail) return <div>동영상을 찾을 수 없습니다.</div>;
 
+  //iframe: class 제거 `className="max-h-[calc(100vh-200px)]"`
   return (
     <div className="flex-1 p-4">
-      <div className="max-w-[1280px] mx-auto">
+      <div className="w-full mx-auto">
         <div className="aspect-video w-full mb-4">
           <iframe
             width="100%"
@@ -73,39 +57,43 @@ export default function VideoPage({ params }: { params: { videoId: string } }) {
           ></iframe>
         </div>
 
-        <div className="flex justify-between items-start mb-4">
-          <div>
-            <h1 className="text-2xl font-bold mb-2">
-              {videoDetail.video.title}
-            </h1>
-            <div className="text-sm text-muted-foreground">
-              조회수 {formatViewCount(videoDetail.video.viewCount)}회 •{' '}
-              {getRelativeTime(videoDetail.video.publishedAt)}
+        <div className="w-full mx-auto">
+          <div className="flex justify-between items-start mb-4">
+            <div>
+              <h1 className="text-2xl font-bold mb-2">
+                {videoDetail.video.title}
+              </h1>
+              <div className="text-sm text-muted-foreground">
+                조회수 {formatViewCount(videoDetail.video.viewCount)}회 •{' '}
+                {getRelativeTime(videoDetail.video.publishedAt)}
+              </div>
+            </div>
+            <VideoPopupMenu videoId={params.videoId} />
+          </div>
+
+          <div className="flex items-center gap-4 mb-4">
+            <Link href={`/youtube/channel/${videoDetail.channel.channelId}`}>
+              <img
+                src={videoDetail.channel.thumbnail}
+                alt={videoDetail.channel.title}
+                className="w-12 h-12 rounded-full"
+              />
+            </Link>
+            <div>
+              <Link
+                href={`/youtube/channel/${videoDetail.channel.channelId}`}
+                className="font-medium hover:text-foreground"
+              >
+                {videoDetail.channel.title}
+              </Link>
             </div>
           </div>
-          <VideoPopupMenu videoId={params.videoId} />
-        </div>
 
-        <div className="flex items-center gap-4 mb-4">
-          <Link href={`/youtube/channel/${videoDetail.channel.channelId}`}>
-            <img
-              src={videoDetail.channel.thumbnail}
-              alt={videoDetail.channel.title}
-              className="w-12 h-12 rounded-full"
-            />
-          </Link>
-          <div>
-            <Link
-              href={`/youtube/channel/${videoDetail.channel.channelId}`}
-              className="font-medium hover:text-foreground"
-            >
-              {videoDetail.channel.title}
-            </Link>
+          <div className="bg-muted p-4 rounded-lg">
+            <p className="whitespace-pre-wrap">
+              {videoDetail.video.description}
+            </p>
           </div>
-        </div>
-
-        <div className="bg-muted p-4 rounded-lg">
-          <p className="whitespace-pre-wrap">{videoDetail.video.description}</p>
         </div>
       </div>
     </div>

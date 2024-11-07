@@ -1,4 +1,4 @@
-import { formatViewCount, getRelativeTime } from '@/lib/youtube-utils';
+import { formatViewCount, getRelativeTime } from '@/utils/youtube';
 import Link from 'next/link';
 import { VideoPopupMenu } from './VideoPopupMenu';
 import { useRouter } from 'next/navigation';

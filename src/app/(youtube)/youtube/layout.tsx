@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Header } from './containers/Header';
-import { Sidebar } from './containers/Sidebar';
+import { Header } from '@/containers/youtube/Header';
+import { Sidebar } from '@/containers/youtube/Sidebar';
 
 export default function YoutubeLayout({
   children,
@@ -28,8 +28,10 @@ export default function YoutubeLayout({
         onMenuSelect={setSelectedMenu}
       />
       <div className="flex-1 w-full">
-        <div className={`w-full transition-all duration-300 ease-in-out pl-0 sm:pl-[88px]`}>
-          <div className="max-w-[2000px] mx-auto">{children}</div>
+        <div
+          className={`w-full transition-all duration-300 ease-in-out pl-0 sm:pl-[88px]`}
+        >
+          <div className="max-w-[4000px] mx-auto">{children}</div>
         </div>
       </div>
     </div>

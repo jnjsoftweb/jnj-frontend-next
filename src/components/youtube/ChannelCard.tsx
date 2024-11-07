@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { formatViewCount } from '@/lib/youtube-utils';
+import { formatViewCount } from '@/utils/youtube';
 
 interface ChannelCardProps {
   channel: {
