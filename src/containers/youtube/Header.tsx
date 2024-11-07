@@ -86,6 +86,17 @@ export function Header({
     checkLoginStatus();
   }, []);
 
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'userId') {
+        window.location.reload();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
   const handleLogin = async () => {
     try {
       const response = await fetchGraphql({
@@ -93,39 +104,21 @@ export function Header({
         variables: { userId: loginForm.userId },
       });
 
-      console.log('Login response:', response);
-
       if (!response.youtubeUserById) {
         alert('존재하지 않는 사용자입니다.');
         return;
       }
-
-      console.log('Password check:', {
-        input: loginForm.password,
-        stored: response.youtubeUserById.password,
-      });
 
       if (response.youtubeUserById.password !== loginForm.password) {
         alert('비밀번호가 일치하지 않습니다.');
         return;
       }
 
-      // 로그인 성공
       localStorage.setItem('userId', loginForm.userId);
       setUser(response.youtubeUserById);
       setLoginForm({ userId: '', password: '' });
       setIsDropdownOpen(false);
-
-      // 이미지 로딩 체크
-      const img = new Image();
-      img.onerror = () => {
-        console.error('썸네일 이미지를 불러올 수 없습니다');
-        setUser((prev) => ({
-          ...prev!,
-          thumbnail: `/images/${prev!.userId}.png`,
-        }));
-      };
-      img.src = response.youtubeUserById.thumbnail;
+      window.location.reload();
     } catch (error) {
       console.error('로그인 실패:', error);
       alert('로그인 중 오류가 발생했습니다.');
@@ -136,6 +129,7 @@ export function Header({
     localStorage.removeItem('userId');
     setUser(null);
     setIsDropdownOpen(false);
+    window.location.reload();
   };
 
   return (

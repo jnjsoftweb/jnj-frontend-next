@@ -4,27 +4,19 @@ import { useState, useEffect } from 'react';
 import ChannelCard from '@/components/youtube/ChannelCard';
 import { fetchGraphql } from '@/service/fetchData';
 import { GQL_CHANNELS_BY_USERID } from '@/queries/gql/youtube';
+import { getLoginInfo } from '@/utils/youtube';
+import { ChannelDetail } from '@/types/youtube';
 
-const userId = 'mooninlearn';
-
-interface Channel {
-  channelId: string;
-  title: string;
-  thumbnail: string;
-  subscriberCount: string;
-  viewCount: string;
-  videoCount: string;
-  description: string;
-  customUrl: string;
-}
 
 function SubscriptionsPage() {
-  const [subscriptions, setSubscriptions] = useState<Channel[]>([]);
+  const [subscriptions, setSubscriptions] = useState<ChannelDetail[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchSubscriptions = async () => {
+      const userId = getLoginInfo();
+      if (!userId) return;
       try {
         const data = await fetchGraphql({
           query: GQL_CHANNELS_BY_USERID,
