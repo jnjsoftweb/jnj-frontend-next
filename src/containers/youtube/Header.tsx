@@ -17,7 +17,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { fetchGraphql } from '@/service/fetchData';
-import { GQL_USER_BY_ID } from '@/queries/gql/youtube';
+import { GQL_USER_BY_ID, GQL_ALL_USERS } from '@/queries/gql/youtube';
 import Link from 'next/link';
 import { Database, Download } from 'lucide-react';
 
@@ -42,9 +42,10 @@ export function Header({
 }: HeaderProps) {
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [user, setUser] = useState<UserInfo | null>(null);
+  const [allUsers, setAllUsers] = useState<UserInfo[]>([]);
+  const [selectedUserId, setSelectedUserId] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(true);
-  const [loginForm, setLoginForm] = useState({ userId: '', password: '' });
-  const [isLoginFormVisible, setIsLoginFormVisible] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   useEffect(() => {
@@ -87,6 +88,33 @@ export function Header({
   }, []);
 
   useEffect(() => {
+    const fetchAllUsers = async () => {
+      try {
+        const response = await fetchGraphql({
+          query: GQL_ALL_USERS
+        });
+        console.log('Users response:', response);
+        if (response?.youtubeAllUsers) {
+          const currentUserId = localStorage.getItem('userId');
+          const otherUsers = response.youtubeAllUsers.filter(
+            (u: UserInfo) => u.userId !== currentUserId
+          ).map(user => ({
+            ...user,
+            thumbnail: user.thumbnail || `/images/${user.userId}.png`
+          }));
+          setAllUsers(otherUsers);
+        }
+      } catch (error) {
+        console.error('사용자 목록 조회 실패:', error);
+      }
+    };
+
+    if (isDropdownOpen) {
+      fetchAllUsers();
+    }
+  }, [isDropdownOpen]);
+
+  useEffect(() => {
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'userId') {
         window.location.reload();
@@ -99,24 +127,21 @@ export function Header({
 
   const handleLogin = async () => {
     try {
-      const response = await fetchGraphql({
-        query: GQL_USER_BY_ID,
-        variables: { userId: loginForm.userId },
-      });
-
-      if (!response.youtubeUserById) {
-        alert('존재하지 않는 사용자입니다.');
+      const selectedUser = allUsers.find(u => u.userId === selectedUserId);
+      if (!selectedUser) {
+        alert('사용자를 선택해주세요.');
         return;
       }
 
-      if (response.youtubeUserById.password !== loginForm.password) {
+      if (selectedUser.password !== password) {
         alert('비밀번호가 일치하지 않습니다.');
         return;
       }
 
-      localStorage.setItem('userId', loginForm.userId);
-      setUser(response.youtubeUserById);
-      setLoginForm({ userId: '', password: '' });
+      localStorage.setItem('userId', selectedUserId);
+      setUser(selectedUser);
+      setPassword('');
+      setSelectedUserId('');
       setIsDropdownOpen(false);
       window.location.reload();
     } catch (error) {
@@ -133,7 +158,7 @@ export function Header({
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background">
+    <header className="sticky top-0 z-[100] w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background">
       <div className="flex items-center justify-between p-4">
         {isSearchVisible ? (
           <div className="flex items-center w-full">
@@ -184,70 +209,50 @@ export function Header({
               >
                 <Search className="h-6 w-6" />
               </Button>
-              <DropdownMenu>
+              <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
                 <DropdownMenuTrigger asChild>
                   {user ? (
                     <img
                       src={user.thumbnail}
                       alt={user.name}
                       className="w-8 h-8 rounded-full cursor-pointer"
+                      onClick={() => setIsDropdownOpen(true)}
                     />
                   ) : (
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => setIsLoginFormVisible(true)}
-                    >
+                    <Button variant="ghost" size="icon">
                       <User className="h-6 w-6" />
                     </Button>
                   )}
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-[200px]">
-                  {user ? (
-                    <>
-                      <div className="px-2 py-1.5">
-                        <div className="flex items-center gap-2">
-                          <div>
-                            <p className="font-medium">{user.name}</p>
-                            <p className="text-sm text-muted-foreground">
-                              {user.email}
-                            </p>
-                          </div>
-                        </div>
+                <DropdownMenuContent align="end" className="w-[300px]">
+                  <div className="p-2 space-y-4">
+                    {allUsers.map((u) => (
+                      <div key={u.userId} className="flex items-center gap-2 p-2 rounded hover:bg-accent cursor-pointer">
+                        <img
+                          src={u.thumbnail}
+                          alt={u.userId}
+                          className="w-8 h-8 rounded-full"
+                          onError={(e) => {
+                            e.currentTarget.src = `/images/${u.userId}.png`;
+                          }}
+                        />
+                        <span className="flex-1">{u.userId}</span>
+                        <Input
+                          type="password"
+                          placeholder="비밀번호"
+                          value={selectedUserId === u.userId ? password : ''}
+                          onChange={(e) => {
+                            setSelectedUserId(u.userId);
+                            setPassword(e.target.value);
+                          }}
+                          className="w-24"
+                        />
+                        <Button className="w-full" onClick={handleLogin}>
+                          확인
+                        </Button>
                       </div>
-                      <DropdownMenuItem onClick={handleLogout}>
-                        <LogOut className="mr-2 h-4 w-4" />
-                        <span>로그아웃</span>
-                      </DropdownMenuItem>
-                    </>
-                  ) : (
-                    <div className="p-2 space-y-2">
-                      <Input
-                        placeholder="사용자 ID"
-                        value={loginForm.userId}
-                        onChange={(e) =>
-                          setLoginForm({
-                            ...loginForm,
-                            userId: e.target.value,
-                          })
-                        }
-                      />
-                      <Input
-                        type="password"
-                        placeholder="비밀번호"
-                        value={loginForm.password}
-                        onChange={(e) =>
-                          setLoginForm({
-                            ...loginForm,
-                            password: e.target.value,
-                          })
-                        }
-                      />
-                      <Button className="w-full" onClick={handleLogin}>
-                        확인
-                      </Button>
-                    </div>
-                  )}
+                    ))}
+                  </div>
                 </DropdownMenuContent>
               </DropdownMenu>
               <DropdownMenu>

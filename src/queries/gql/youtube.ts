@@ -1,3 +1,15 @@
+const GQL_ALL_USERS = `
+  query {
+    youtubeAllUsers {
+      userId
+      name
+      email
+      thumbnail
+      password
+    }
+  }
+`;
+
 const GQL_USER_BY_ID = `
   query getYoutubeUserById($userId: String!) {
     youtubeUserById(userId: $userId) {
@@ -167,6 +179,7 @@ const GQL_VIDEO_DETAIL = `
 `;
 
 export {
+  GQL_ALL_USERS,
   GQL_USER_BY_ID,
   GQL_ALL_CHANNELS,
   GQL_CHANNEL_DETAIL,
