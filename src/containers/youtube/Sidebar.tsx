@@ -12,8 +12,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { fetchGraphql } from '@/service/fetchData';
 import { GQL_CHANNELS_BY_USERID } from '@/queries/gql/youtube';
-
-const userId = 'mooninlearn';
+import { getLoginInfo } from '@/utils/youtube';
 
 interface SidebarProps {
   isExpandedSidebar: boolean;
@@ -31,8 +30,11 @@ export function Sidebar({ isExpandedSidebar, onMenuSelect }: SidebarProps) {
   useEffect(() => {
     const fetchSubscriptions = async () => {
       try {
+        const userId = getLoginInfo();
+        if (!userId) return;
+
         const variables = {
-          userId, // 실제 사용할 userId 값으로 변경 필요
+          userId,
         };
 
         const data = await fetchGraphql({

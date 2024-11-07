@@ -33,3 +33,19 @@ export function getRelativeTime(dateString: string): string {
   if (minutes > 0) return `${minutes}분 전`;
   return `${seconds}초 전`;
 }
+
+export function saveLoginInfo(userId: string) {
+  localStorage.setItem('userId', userId);
+}
+
+export function getLoginInfo(): string | null {
+  return localStorage.getItem('userId');
+}
+
+export function clearLoginInfo() {
+  localStorage.removeItem('userId');
+}
+
+export function isLoggedIn(): boolean {
+  return !!getLoginInfo();
+}

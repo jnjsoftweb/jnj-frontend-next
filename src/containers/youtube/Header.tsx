@@ -18,6 +18,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { fetchGraphql } from '@/service/fetchData';
 import { GQL_USER_BY_ID } from '@/queries/gql/youtube';
+import Link from 'next/link';
+import { Database, Download } from 'lucide-react';
 
 interface UserInfo {
   userId: string;
@@ -69,7 +71,7 @@ export function Header({
             console.error('썸네일 이미지를 불러올 수 없습니다');
             setUser({
               ...response.youtubeUserById,
-              thumbnail: '/images/placeholder.jpg',
+              thumbnail: `/images/${response.youtubeUserById.userId}.png`,
             });
             setLoading(false);
           };
@@ -91,10 +93,17 @@ export function Header({
         variables: { userId: loginForm.userId },
       });
 
+      console.log('Login response:', response);
+
       if (!response.youtubeUserById) {
         alert('존재하지 않는 사용자입니다.');
         return;
       }
+
+      console.log('Password check:', {
+        input: loginForm.password,
+        stored: response.youtubeUserById.password,
+      });
 
       if (response.youtubeUserById.password !== loginForm.password) {
         alert('비밀번호가 일치하지 않습니다.');
@@ -113,7 +122,7 @@ export function Header({
         console.error('썸네일 이미지를 불러올 수 없습니다');
         setUser((prev) => ({
           ...prev!,
-          thumbnail: '/placeholder.jpg',
+          thumbnail: `/images/${prev!.userId}.png`,
         }));
       };
       img.src = response.youtubeUserById.thumbnail;
@@ -247,9 +256,33 @@ export function Header({
                   )}
                 </DropdownMenuContent>
               </DropdownMenu>
-              <Button variant="ghost" size="icon">
-                <Settings className="h-6 w-6" />
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <Settings className="h-6 w-6" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <Link href="/youtube/settings/user">
+                    <DropdownMenuItem>
+                      <User className="mr-2 h-4 w-4" />
+                      <span>User</span>
+                    </DropdownMenuItem>
+                  </Link>
+                  <Link href="/youtube/settings/database">
+                    <DropdownMenuItem>
+                      <Database className="mr-2 h-4 w-4" />
+                      <span>Database</span>
+                    </DropdownMenuItem>
+                  </Link>
+                  <Link href="/youtube/settings/download">
+                    <DropdownMenuItem>
+                      <Download className="mr-2 h-4 w-4" />
+                      <span>Download</span>
+                    </DropdownMenuItem>
+                  </Link>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </>
         )}
