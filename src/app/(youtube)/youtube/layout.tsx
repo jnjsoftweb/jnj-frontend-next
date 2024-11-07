@@ -29,9 +29,9 @@ export default function YoutubeLayout({
       />
       <div className="flex-1 w-full">
         <div
-          className={`w-full transition-all duration-300 ease-in-out pl-0 sm:pl-[88px]`}
+          className={`w-full transition-all duration-300 ease-in-out pl-0`}
         >
-          <div className="max-w-[2000px] mx-auto">{children}</div>
+          <div className="mx-auto">{children}</div>
         </div>
       </div>
     </div>

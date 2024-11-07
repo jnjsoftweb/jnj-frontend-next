@@ -69,7 +69,7 @@ export default function ChannelInfoPage({ params }: Props) {
 
   return (
     <main className="min-h-screen p-4">
-      <div className="max-w-7xl mx-auto">
+      <div className="mx-auto">
         <div className="mb-8">
           <h1 className="text-2xl font-bold mb-4">{channelDetail.title}</h1>
           <ChannelTabs

@@ -61,7 +61,7 @@ export default function VideoPage({ params }: { params: { videoId: string } }) {
 
   return (
     <div className="flex-1 p-4">
-      <div className="max-w-[1280px] mx-auto">
+      <div className="mx-auto">
         <div className="aspect-video w-full mb-4">
           <iframe
             width="100%"

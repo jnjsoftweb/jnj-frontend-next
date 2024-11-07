@@ -53,7 +53,7 @@ export function Header({
                 </span>
               </div>
             </div>
-            <div className="hidden md:flex items-center gap-4 flex-1 max-w-xl ml-auto">
+            <div className="hidden md:flex items-center gap-4 flex-1 ml-auto">
               <Input className="flex-1" placeholder="Search" type="search" />
               <Button size="icon" variant="ghost">
                 <Search className="h-5 w-5" />

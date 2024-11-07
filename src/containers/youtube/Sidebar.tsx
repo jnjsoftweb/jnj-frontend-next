@@ -72,9 +72,8 @@ export function Sidebar({ isExpandedSidebar, onMenuSelect }: SidebarProps) {
         ${
           isExpandedSidebar
             ? 'w-[240px] translate-x-0 shadow-lg z-50'
-            : 'w-[88px] -translate-x-full sm:translate-x-0 z-40'
+            : 'hidden'
         }
-        ${isExpandedSidebar ? 'block' : 'hidden sm:block'}
       `}
     >
       <nav className="space-y-2 p-2 h-full overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400">
@@ -86,7 +85,7 @@ export function Sidebar({ isExpandedSidebar, onMenuSelect }: SidebarProps) {
               onClick={() => onMenuSelect(item.name)}
             >
               <item.icon className="h-5 w-5 mr-0 xl:mr-2" />
-              <span className={isExpandedSidebar ? 'inline' : 'hidden'}>
+              <span className='inline'>
                 {item.name}
               </span>
             </Button>
@@ -121,7 +120,7 @@ export function Sidebar({ isExpandedSidebar, onMenuSelect }: SidebarProps) {
                 className="h-6 w-6 rounded-full object-cover flex-shrink-0"
               />
               <span
-                className={isExpandedSidebar ? 'inline truncate' : 'hidden'}
+                className='inline truncate'
               >
                 {channel.title}
               </span>
@@ -139,7 +138,7 @@ export function Sidebar({ isExpandedSidebar, onMenuSelect }: SidebarProps) {
                 showAllSubscriptions ? 'rotate-180' : ''
               }`}
             />
-            <span className={isExpandedSidebar ? 'inline' : 'hidden'}>
+            <span className='inline'>
               {showAllSubscriptions ? '간략히 보기' : '더보기'}
             </span>
           </Button>
